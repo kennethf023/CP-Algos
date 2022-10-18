@@ -1,0 +1,79 @@
+#include <bits/stdc++.h>
+#pragma G++ optimize("Ofast")
+#define pb push_back
+#define int long long
+#define fi first
+#define se second
+using namespace std;
+typedef long long ll;
+typedef vector<int> vi;
+typedef vector<ll>vl;
+typedef pair<int,int> pii;
+typedef pair<ll,ll>pll;
+
+const int maxn=1e5;
+int a[maxn],q,n,x,y;
+struct pnt{
+    int sum,pre,suf,tot;
+};
+pnt combine(pnt a,pnt b){
+    pnt c;
+    c.sum=a.sum+b.sum;
+    c.pre=max(a.pre,a.sum+b.pre);
+    c.suf=max(b.suf,b.sum+a.suf);
+    c.tot=max(max(a.tot,b.tot),a.suf+b.pre);
+    return c;
+}
+pnt make(int v){
+    pnt c;
+    c.sum=v;
+    c.pre=c.suf=c.tot=max(0LL,v);
+    return c;
+}
+pnt tree[4*maxn];
+inline void build(int k,int l,int r){
+    if(l==r)tree[k]=make(a[l]);
+    else{
+        int mid=(l+r)>>1;
+        build(k*2,l,mid);
+        build(k*2+1,mid+1,r);
+        tree[k]=combine(tree[k*2],tree[k*2+1]);
+    }
+}
+inline void update(int k,int l,int r, int pos, int v){
+    if(l==r)tree[k]=make(v);
+    else{
+        int mid=(l+r)>>1;
+        if(pos<=mid)update(k*2,l,mid,pos,v);
+        else update(k*2+1,mid+1,r,pos,v);
+        tree[k]=combine(tree[k*2],tree[k*2+1]);
+    }
+}
+inline pnt query(int k,int bl,int br,int l,int r){
+    if(l>r)return make(0);
+    if(l==bl&&r==br)return tree[k];
+    int mid=(bl+br)>>1;
+    return combine(query(k*2,bl,mid,l,min(r,mid)),query(k*2+1,mid+1,br,max(l,mid+1),r));
+}
+
+inline void solve(int tc){
+    cin>>n>>q;
+    for(int i=1;i<=n;i++)cin>>a[i];
+    build(1,1,n);
+    cout<<query(1,1,n,1,n).tot<<endl;
+    for(int i=1;i<=q;i++){
+        cin>>x>>y;
+        update(1,1,n,x,y);
+        cout<<query(1,1,n,1,n).tot<<endl;
+    }
+}
+
+int32_t main() {
+    ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+    int T=1;
+//    cin>>T;
+    for(int i=1;i<=T;i++)solve(i);
+    return 0;
+}
+
+
