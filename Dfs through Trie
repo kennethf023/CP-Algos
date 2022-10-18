@@ -1,0 +1,83 @@
+#include <bits/stdc++.h>
+#pragma G++ optimize("Ofast")
+#define pb push_back
+//#define int long long
+#define fi first
+#define se second
+using namespace std;
+typedef long long ll;
+typedef vector<int> vi;
+typedef vector<ll>vl;
+typedef pair<int,int> pii;
+typedef pair<ll,ll>pll;
+
+struct node{
+    int a[26];
+    bool w,l;
+}t[500002];
+
+string s,ans,maxstr;
+int n,cnt,maxln;
+
+
+void add(string s,bool last){
+    int now=0;
+    for(int i=0;i<(int)s.length();i++){
+        int x=s[i]-'a';
+        t[now].a[x]=t[now].a[x]?t[now].a[x]:++cnt;
+        now=t[now].a[x];
+        t[now].l=last;
+    }
+    t[now].w=true;
+    t[now].l=last;
+}
+
+void dfs(int no){
+    int now=0,later=-1;
+    if(t[no].w){
+        ans+="P";
+    }
+    for(int i=0;i<26;i++){
+        if(t[no].a[i]){
+            now=t[no].a[i];
+            if(t[now].l){
+                later=i;
+                continue;
+            }
+            ans.pb((char)(i)+'a');
+            dfs(now);
+            ans+="-";
+        }
+    }
+    if(later!=-1){
+        ans.pb((char)(later)+'a');
+        dfs(t[no].a[later]);
+    }
+}
+
+inline void solve(int tc){
+    cin>>n;
+    for(int i=1;i<=n;i++){
+        cin>>s;
+        add(s,0);
+        if((int)s.length()>maxln){
+            maxln=(int)s.length();
+            maxstr=s;
+        }
+    }
+    add(maxstr,1);
+    dfs(0);
+    cout<<ans.size()<<endl;
+    for(int i=0;i<ans.size();i++)cout<<ans[i]<<endl;
+    return;
+}
+
+int32_t main() {
+//    ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+    int T=1;
+    for(int i=1;i<=T;i++)solve(i);
+    return 0;
+}
+
+
+
