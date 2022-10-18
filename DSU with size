@@ -1,0 +1,16 @@
+int n,f[200005],s[200005];
+ 
+int find(int v){
+    if(f[v]==v)return v;
+    return f[v]=find(f[v]);
+}
+ 
+void merge(int x,int y){
+    int fu=find(x);
+    int fv=find(y);
+    if(fu!=fv){
+        if(s[fu]<s[fv])swap(fu,fv);
+        f[fv]=fu;
+        s[fu]+=s[fv];
+    }
+}
