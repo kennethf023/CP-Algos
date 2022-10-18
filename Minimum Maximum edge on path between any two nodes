@@ -1,0 +1,40 @@
+#include <bits/stdc++.h>
+#pragma G++ optimize("Ofast")
+#define pb push_back
+#define int long long
+using namespace std;
+typedef long long ll;
+typedef vector<int> vi;
+typedef vector<ll,ll>vl;
+typedef pair<int,int> pii;
+typedef pair<ll,ll>pll;
+
+//floyd warshall thingy
+
+int c,s,q,x,y,w,dp[105][105];
+
+
+int32_t main() {
+    ios::sync_with_stdio(false);cin.tie(0);cout.tie(0);
+    cin>>c>>s>>q;
+    for(int i=1;i<=c;i++)for(int j=1;j<=c;j++)dp[i][j]=INT_MAX;
+    for(int i=1;i<=s;i++){
+        cin>>x>>y>>w;
+        dp[x][y]=w;
+        dp[y][x]=w;
+    }
+    for(int i=1;i<=c;i++){
+        for(int j=1;j<=c;j++){
+            for(int k=1;k<=c;k++){
+                dp[j][k]=min(dp[j][k],max(dp[j][i],dp[i][k]));
+            }
+        }
+    }
+    for(int i=1;i<=q;i++){
+        cin>>x>>y;
+        if(dp[x][y]==INT_MAX)cout<<"no path"<<endl;
+        else cout<<dp[x][y]<<endl;
+    }
+    return 0;
+}
+
